@@ -1,25 +1,37 @@
 package utils
 
-fun String?.validateName(nameInput: String?): Boolean {
-    return Validation.validate(nameInput) { name ->
+fun String?.validateMenu(): Boolean {
+    return Validation.validate(this) { option ->
+        option.toInt() in 1..5
+    }
+}
+
+fun String?.validateName(): Boolean {
+    return Validation.validate(this) { name ->
         name.length in 3..25
     }
 }
 
-fun String?.validatePrice(priceInput: String?): Boolean {
-    return Validation.validate(priceInput) { price ->
+fun String?.validatePrice(): Boolean {
+    return Validation.validate(this) { price ->
         price.toInt() > 10000
     }
 }
 
-fun String?.validateHeelsHeight(heightInput: String?): Boolean {
-    return Validation.validate(heightInput) { height ->
+fun String?.validateType(): Boolean {
+    return Validation.validate(this) { name ->
+        name == "Heels" || name == "RollerSkate"
+    }
+}
+
+fun String?.validateHeelsHeight(): Boolean {
+    return Validation.validate(this) { height ->
         height.toDouble() in 1.0..9.0
     }
 }
 
-fun String?.validateTotalWheel(wheelInput: String?): Boolean {
-    return Validation.validate(wheelInput) { wheel ->
+fun String?.validateTotalWheel(): Boolean {
+    return Validation.validate(this) { wheel ->
         wheel.toInt() in 2..4
     }
 }
