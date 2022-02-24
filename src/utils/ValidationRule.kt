@@ -35,3 +35,9 @@ fun String?.validateTotalWheel(): Boolean {
         wheel.toInt() in 2..4
     }
 }
+
+fun String?.validateDataIndex(range: IntRange): Boolean {
+    return Validation.validate(this) { index ->
+        index.toInt() in range
+    }
+}

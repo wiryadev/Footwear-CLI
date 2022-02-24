@@ -3,7 +3,7 @@ package core
 import data.Footwear
 import ui.FootwearUi
 import utils.*
-import java.util.*
+import java.util.Locale
 
 class FootwearControllerImpl(private val footwearUi: FootwearUi) : FootwearController(footwearUi) {
 
@@ -15,72 +15,7 @@ class FootwearControllerImpl(private val footwearUi: FootwearUi) : FootwearContr
         executeAction(
             action = Action.ADD,
         ) {
-            var name = ""
-
-            do {
-                getNameInput()?.let {
-                    if (it.validateName()) {
-                        name = it
-                    }
-                }
-            } while (name.isEmpty())
-
-            var price = 0
-            do {
-                getPriceInput()?.let {
-                    if (it.validatePrice()) {
-                        price = it.toInt()
-                    }
-                }
-            } while (price == 0)
-
-            var type = ""
-            do {
-                getTypeInput()?.let {
-                    if (it.validateType()) {
-                        type = it
-                    }
-                }
-            } while (type.isEmpty())
-
-            when (type) {
-                "Heels" -> {
-                    var height = 0.0
-                    do {
-                        getHeightInput()?.let {
-                            if (it.validateHeelsHeight()) {
-                                height = it.toDouble()
-                            }
-                        }
-                    } while (height == 0.0)
-
-                    footwears.add(
-                        Footwear.Heels(
-                            name = name,
-                            price = price,
-                            height = height
-                        )
-                    )
-                }
-                "RollerSkate" -> {
-                    var wheels = 0
-                    do {
-                        getWheelInput()?.let {
-                            if (it.validateTotalWheel()) {
-                                wheels = it.toInt()
-                            }
-                        }
-                    } while (wheels == 0)
-
-                    footwears.add(
-                        Footwear.RollerSkate(
-                            name = name,
-                            price = price,
-                            totalWheel = wheels
-                        )
-                    )
-                }
-            }
+            footwears.add(createFootwear())
         }
     }
 
@@ -93,9 +28,45 @@ class FootwearControllerImpl(private val footwearUi: FootwearUi) : FootwearContr
     }
 
     override fun update() {
+        executeAction(
+            action = Action.UPDATE,
+        ) {
+            footwearUi.viewFootwear(footwears)
+            val validRange = 1..footwears.size
+
+            var position = 0
+            do {
+                footwearUi.showActionInput("update")?.let {
+                    if (it.validateDataIndex(validRange)) {
+                        position = it.toInt()
+                    }
+                }
+            } while (position == 0)
+
+            val index = position - 1
+            footwears[index] = createFootwear()
+        }
     }
 
     override fun delete() {
+        executeAction(
+            action = Action.DELETE
+        ) {
+            footwearUi.viewFootwear(footwears)
+            val validRange = 1..footwears.size
+
+            var position = 0
+            do {
+                footwearUi.showActionInput("delete")?.let {
+                    if (it.validateDataIndex(validRange)) {
+                        position = it.toInt()
+                    }
+                }
+            } while (position == 0)
+
+            val index = position - 1
+            footwears.removeAt(index)
+        }
     }
 
     private fun executeAction(action: Action, block: () -> Unit) {
@@ -119,11 +90,27 @@ class FootwearControllerImpl(private val footwearUi: FootwearUi) : FootwearContr
         }
     }
 
-    private fun getNameInput() = footwearUi.input("name [3 - 15 characters]")
-    private fun getPriceInput() = footwearUi.input("price [more than 10000]")
-    private fun getTypeInput() = footwearUi.input("type [Heels / RollerSkate]")
-    private fun getHeightInput() = footwearUi.input("height [1.0 - 9.0 inclusive]")
-    private fun getWheelInput() = footwearUi.input("total wheel [2 - 4 inclusive]")
+    private fun createFootwear(): Footwear {
+        val name = getName()
+        val price = getPrice()
+
+        return if (getType() == "Heels") {
+            val height = getHeelsHeight()
+            Footwear.Heels(
+                name = name,
+                price = price,
+                height = height
+            )
+        } else {
+            val wheels = getTotalWheel()
+            Footwear.RollerSkate(
+                name = name,
+                price = price,
+                totalWheel = wheels
+            )
+        }
+    }
+
 }
 
 enum class Action {

@@ -22,15 +22,22 @@ class FootwearUiImpl : FootwearUi {
     }
 
     override fun viewFootwear(footwears: List<Footwear>) {
-        println("===================================================")
-        println("| No\t| Name\t\t\t| Price\t| Height\t| Total Wheel\t|")
-        println("===================================================")
+        println("=========================================================================")
+        println("| No\t| Name\t\t\t\t\t| Price\t\t| Height\t| Total Wheel\t|")
+        println("=========================================================================")
 
         for ((index, footwear) in footwears.withIndex()) {
             val height = if (footwear is Footwear.Heels) "${footwear.height} cm" else " - "
             val wheels = if (footwear is Footwear.RollerSkate) "${footwear.totalWheel} Wheels" else " - "
-            println("| ${index + 1}\t| ${footwear.name}\t| ${footwear.price}\t| $height\t| $wheels\t|")
+            println("| ${index + 1}\t\t| ${footwear.name}\t| ${footwear.price}\t| $height\t| $wheels\t|")
         }
+
+        println("=========================================================================")
+    }
+
+    override fun showActionInput(action: String): String? {
+        print("Input footwear index to $action: ")
+        return readlnOrNull()
     }
 
     override fun showActionSuccessMessage(action: String) {
