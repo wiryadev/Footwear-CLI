@@ -2,7 +2,7 @@ package ui
 
 import data.Footwear
 
-class FootwearUiImpl: FootwearUi {
+class FootwearUiImpl : FootwearUi {
 
     override fun showMenu(): String? {
         println("Just DU It !!")
@@ -21,8 +21,16 @@ class FootwearUiImpl: FootwearUi {
         return readlnOrNull()
     }
 
-    override fun viewFootwear(list: List<Footwear>) {
-        println("")
+    override fun viewFootwear(footwears: List<Footwear>) {
+        println("===================================================")
+        println("| No\t| Name\t\t\t| Price\t| Height\t| Total Wheel\t|")
+        println("===================================================")
+
+        for ((index, footwear) in footwears.withIndex()) {
+            val height = if (footwear is Footwear.Heels) "${footwear.height} cm" else " - "
+            val wheels = if (footwear is Footwear.RollerSkate) "${footwear.totalWheel} Wheels" else " - "
+            println("| ${index + 1}\t| ${footwear.name}\t| ${footwear.price}\t| $height\t| $wheels\t|")
+        }
     }
 
     override fun showActionSuccessMessage(action: String) {
