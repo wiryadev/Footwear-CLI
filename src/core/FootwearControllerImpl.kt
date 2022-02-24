@@ -44,7 +44,7 @@ class FootwearControllerImpl(private val footwearUi: FootwearUi) : FootwearContr
             } while (position == 0)
 
             val index = position - 1
-            footwears[index] = createFootwear()
+            footwears[index] = createFootwear(footwears[index])
         }
     }
 
@@ -90,24 +90,45 @@ class FootwearControllerImpl(private val footwearUi: FootwearUi) : FootwearContr
         }
     }
 
-    private fun createFootwear(): Footwear {
+    private fun createFootwear(footwear: Footwear? = null): Footwear {
         val name = getName()
         val price = getPrice()
 
-        return if (getType() == "Heels") {
-            val height = getHeelsHeight()
-            Footwear.Heels(
-                name = name,
-                price = price,
-                height = height
-            )
+        return if (footwear == null) {
+            if (getType() == "Heels") {
+                val height = getHeelsHeight()
+                Footwear.Heels(
+                    name = name,
+                    price = price,
+                    height = height
+                )
+            } else {
+                val wheels = getTotalWheel()
+                Footwear.RollerSkate(
+                    name = name,
+                    price = price,
+                    totalWheel = wheels
+                )
+            }
         } else {
-            val wheels = getTotalWheel()
-            Footwear.RollerSkate(
-                name = name,
-                price = price,
-                totalWheel = wheels
-            )
+            when (footwear) {
+                is Footwear.Heels -> {
+                    val height = getHeelsHeight()
+                    Footwear.Heels(
+                        name = name,
+                        price = price,
+                        height = height
+                    )
+                }
+                is Footwear.RollerSkate -> {
+                    val wheels = getTotalWheel()
+                    Footwear.RollerSkate(
+                        name = name,
+                        price = price,
+                        totalWheel = wheels
+                    )
+                }
+            }
         }
     }
 
